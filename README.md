@@ -132,8 +132,9 @@ VITE_API_BASE_URL="https://api.example.com/api" npm run build:mp-weixin
 
 ## 文档
 
+- [**零成本体验版**](docs/trial-mode.md) —— 不买服务器不备案，让身边人扫码就能用
+- [**生产部署手册**](deploy/README.md) —— 正式上线：备案、域名、HTTPS
 - [**工程笔记与设计决策**](docs/engineering-notes.md) —— 改代码前先看这份
-- [**生产部署手册**](deploy/README.md) —— 上线流程、备案、HTTPS、故障速查
 - [接口契约](docs/api-contract.md)
 - [后端本地运行](docs/backend-setup.md)
 - [前端构建](docs/frontend-build.md)
