@@ -1,0 +1,109 @@
+{
+  "info": {
+    "name": "班级助手 API（本地 8080）",
+    "description": "导入 Apifox / Bruno / Postman 后即可使用。第 5、6 条需要先把登录返回的 token 粘到 Authorization 头里。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "① 参数校验（空 code 应返回 400 + 1001）",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"code\": \"\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/wx-login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "auth", "wx-login"]
+        }
+      }
+    },
+    {
+      "name": "② 拦截器（不带 token 应返回 401 + 1002）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/me",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "auth", "me"]
+        }
+      }
+    },
+    {
+      "name": "③ 404（不存在的路径应返回 404 + 1004）",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/foo",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["foo"]
+        }
+      }
+    },
+    {
+      "name": "④ 登录（应返回 code=0 和 token）",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"code\": \"test_openid_001\"}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/wx-login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "auth", "wx-login"]
+        }
+      }
+    },
+    {
+      "name": "⑤ 当前用户（先把 ④ 的 token 粘进来）",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer 粘贴你的token" }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/auth/me",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "auth", "me"]
+        }
+      }
+    },
+    {
+      "name": "⑥ 首页聚合（先把 ④ 的 token 粘进来）",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer 粘贴你的token" }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/teacher/home/overview",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "teacher", "home", "overview"]
+        }
+      }
+    }
+  ]
+}

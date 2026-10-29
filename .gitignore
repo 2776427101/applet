@@ -1,0 +1,66 @@
+# ===== 本地私人资料，绝不能上传 =====
+.env
+.env.*
+!.env.example
+**/application-local.yml
+**/application-secret.yml
+**/application-prod.yml
+*.pem
+*.key
+*.p12
+*.jks
+ID.txt
+.workbuddy/
+.workbuddy-ai/
+**/memory/
+memory/
+**/MEMORY.md
+*.genie
+.wbapp_*.genie
+
+# 真实学生名单、成绩表等数据文件
+*.xlsx
+*.xls
+*.csv
+
+# 日志和压缩包
+*.log
+logs/
+backend-run.log
+*.zip
+*.7z
+*.rar
+*.tar.gz
+.tmp*
+
+# ===== 依赖和构建产物 =====
+node_modules/
+dist/
+unpackage/
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+!**/.mvn/wrapper/maven-wrapper.jar
+
+# uni-app / 微信开发者工具
+_icon-color-backup/
+project.private.config.json
+.hbuilderx/
+
+# ===== IDE / 系统文件 =====
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 临时和备份 =====
+*.bak
+*.backup
+.archive/

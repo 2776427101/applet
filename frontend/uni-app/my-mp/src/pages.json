@@ -1,0 +1,136 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "班级助手"
+			}
+		},
+		{
+			"path": "pages/teacher/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/teacher/student/index",
+			"style": {
+				"navigationBarTitleText": "学生"
+			}
+		},
+		{
+			"path": "pages/teacher/student/detail",
+			"style": {
+				"navigationBarTitleText": "学生详情"
+			}
+		},
+		{
+			"path": "pages/teacher/student/edit",
+			"style": {
+				"navigationBarTitleText": "添加学生"
+			}
+		},
+		{
+			"path": "pages/teacher/student/import",
+			"style": {
+				"navigationBarTitleText": "导入名单"
+			}
+		},
+		{
+			"path": "pages/teacher/class/setting",
+			"style": {
+				"navigationBarTitleText": "班级设置"
+			}
+		},
+		{
+			"path": "pages/teacher/todo/index",
+			"style": {
+				"navigationBarTitleText": "待办"
+			}
+		},
+		{
+			"path": "pages/teacher/score/index",
+			"style": {
+				"navigationBarTitleText": "成绩"
+			}
+		},
+		{
+			"path": "pages/teacher/score/edit",
+			"style": {
+				"navigationBarTitleText": "录入成绩"
+			}
+		},
+		{
+			"path": "pages/teacher/score/exam-edit",
+			"style": {
+				"navigationBarTitleText": "新建考试"
+			}
+		},
+		{
+			"path": "pages/teacher/score/import",
+			"style": {
+				"navigationBarTitleText": "导入成绩"
+			}
+		},
+		{
+			"path": "pages/teacher/seat/index",
+			"style": {
+				"navigationBarTitleText": "座位"
+			}
+		},
+		{
+			"path": "pages/teacher/leave/index",
+			"style": {
+				"navigationBarTitleText": "请假",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#8A8178",
+		"selectedColor": "#C5342B",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "white",
+		"list": [
+			{
+				"pagePath": "pages/teacher/index/index",
+				"text": "首页",
+				"iconPath": "static/icons/tab-home.png",
+				"selectedIconPath": "static/icons/tab-home-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/student/index",
+				"text": "学生",
+				"iconPath": "static/icons/tab-student.png",
+				"selectedIconPath": "static/icons/tab-student-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/score/index",
+				"text": "成绩",
+				"iconPath": "static/icons/tab-score.png",
+				"selectedIconPath": "static/icons/tab-score-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/seat/index",
+				"text": "座位",
+				"iconPath": "static/icons/tab-seat.png",
+				"selectedIconPath": "static/icons/tab-seat-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/leave/index",
+				"text": "请假",
+				"iconPath": "static/icons/tab-leave.png",
+				"selectedIconPath": "static/icons/tab-leave-on.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "班级助手",
+		"navigationBarBackgroundColor": "#F7EFE4",
+		"backgroundColor": "#F7EFE4"
+	}
+}
