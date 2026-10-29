@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.*.example
 **/application-local.yml
 **/application-secret.yml
 **/application-prod.yml
@@ -17,6 +18,11 @@ memory/
 **/MEMORY.md
 *.genie
 .wbapp_*.genie
+
+# ===== 部署产物：服务器上的运行时文件，不进仓库 =====
+deploy/.env
+deploy/app/*.jar
+deploy/certbot/
 
 # 真实学生名单、成绩表等数据文件
 *.xlsx

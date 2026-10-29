@@ -1,0 +1,104 @@
+# 班级助手 · 生产部署编排
+#
+# 三个容器，一条链路：mysql（内网） → backend（Java） → nginx（公网 80/443）
+# 详细步骤见同目录 README.md
+#
+# 常用命令（在本目录执行）：
+#   docker compose up -d            启动全部
+#   docker compose ps               看状态
+#   docker compose logs -f backend  跟后端日志
+#   docker compose down             停止（数据卷保留）
+
+services:
+  # ---------------------------------------------------------------- 数据库
+  mysql:
+    image: mysql:8.4
+    container_name: ca-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: class_assistant
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: Asia/Shanghai
+    # 小内存机器的关键调优。
+    # 默认 innodb_buffer_pool_size 是 128M，但 MySQL 8 实测常驻会到 400M+，
+    # 在 2G 机器上和 JVM 抢内存会被 OOM Killer 干掉。这里显式压小。
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --innodb-buffer-pool-size=${MYSQL_BUFFER_POOL:-256M}
+      - --max-connections=60
+      - --default-time-zone=+08:00
+      - --skip-name-resolve
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # 只在内网暴露。数据库绝不能映射到宿主机端口 —— 那等于把 3306 开到公网，
+      # 每天会被扫描器爆破几千次。
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  # ---------------------------------------------------------------- 后端
+  backend:
+    image: eclipse-temurin:21-jre
+    container_name: ca-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        # 等数据库真能 ping 通再启动，否则 Spring 启动时连不上库会直接退出
+        condition: service_healthy
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      # 容器里的 localhost 是容器自己，连库必须写服务名 mysql。
+      # 这个变量会覆盖 application.yml 里写死的 localhost 地址。
+      SPRING_DATASOURCE_URL: >-
+        jdbc:mysql://mysql:3306/class_assistant?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+      JWT_SECRET: ${JWT_SECRET}
+      WX_APPID: ${WX_APPID}
+      WX_SECRET: ${WX_SECRET}
+      # 生产必须 false。留 true 的话所有人扫码登录都会变成同一个测试老师。
+      WX_MOCK: "false"
+      TZ: Asia/Shanghai
+    volumes:
+      # 把宿主机 ./app 目录挂进来，放打好的 jar，改版本只需替换文件
+      - ./app:/app:ro
+    # 显式限堆。容器里 JVM 感知不到宿主机余量，给太大容易被 OOM Killer 杀掉。
+    # 512m 堆 + 256m 元空间/线程栈 ≈ 常驻 700M，配 4G 内存机器比较稳。
+    command:
+      - java
+      - -Xms256m
+      - -Xmx512m
+      - -jar
+      - /app/class_assistant_server.jar
+    ports:
+      # 测试期用 http://服务器IP:8080/api/... 直连验证，不需要域名和备案。
+      # ⚠️ Nginx 反代跑通以后，把这两行删掉，让后端只能被 Nginx 访问。
+      - "8080:8080"
+    expose:
+      - "8080"
+
+  # ---------------------------------------------------------------- 网关
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: ca-nginx
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # certbot 申请的证书放这里，Nginx 只读挂载
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+
+volumes:
+  mysql-data:
