@@ -25,16 +25,19 @@
 ```text
 朋友的手机（微信打开体验版）
         │
-        │  HTTP 请求
+        │  HTTPS 请求
         ▼
-xxx.natfrp.cloud:端口        ← SakuraFrp 提供的公网入口
+frp-hat.com:41561            ← SakuraFrp 公网入口（必须开「自动 HTTPS」）
         │
-        │  隧道转发到你本机
+        │  脱掉 TLS 壳，用明文转给你本机
         ▼
 你的电脑
-  ├─ Spring Boot  :8080      ← 后端
+  ├─ Spring Boot  :8080      ← 后端（仍然是明文 HTTP，不用改）
   └─ MySQL        :3306      ← 数据库
 ```
+
+**为什么要 HTTPS**：国内节点禁止明文 HTTP 走隧道，否则网关直接返回 501。
+所以 HTTPS 是 SakuraFrp 那边加的壳，你的后端不用动。
 
 **理解了这张图，后面每一步的位置就清楚了**：第 1 步修好最右边，第 2 步修通中间，
 第 3–4 步让最左边能连上，第 5–6 步才是给别人用。
@@ -116,28 +119,59 @@ curl -s http://127.0.0.1:8080/api/teacher/home/overview
 | 本地端口 | `8080` |
 | 备注 | 班级助手后端 |
 
-4. 保存后启动隧道，面板上会显示一个地址，形如 `cn-xx.natfrp.cloud:12345`
+4. 保存后启动隧道，面板上会显示一个地址，形如 `frp-hat.com:41561`
 
 ⚠️ **这条隧道不要删**。免费隧道只要不删，地址就一直固定；
 删了重建地址会变，前端就得重新构建上传。
 
-#### 2.2 验证（关键一步）
+#### 2.2 必须开「自动 HTTPS」
+
+**这一步不能跳。** 国内节点现在禁止明文 HTTP 通过隧道（机房合规要求）。
+不开的话，访问任何地址都会返回一个 `501 Not Implemented` 的 SakuraFrp 拦截页，
+请求根本到不了你的后端。
+
+操作：
+
+1. SakuraFrp 面板 → 编辑刚才那条隧道
+2. 找到 **「自动 HTTPS」**，选择 `自动`（或 `启用`）
+3. 保存 → **重启隧道**（必须重启才生效）
+
+官方文档对「应用的 HTTP API（国内节点）」的结论是**必须开**，你这正好是这类。
+
+开启后的原理：frpc 用 TLS 接住外部请求，把壳脱掉，再用明文 HTTP 转给本机 8080。
+所以**后端不用改，也不用配证书**。
+
+> 参考：<https://doc.natfrp.com/frpc/auto-https.html>
+
+#### 2.3 验证（关键一步）
 
 **手机上关掉 WiFi，用流量（4G/5G）**，浏览器打开：
 
 ```
-http://你拿到的地址/api/teacher/home/overview
+https://你拿到的地址/api/teacher/home/overview
 ```
 
+注意三件事：
+
+- **是 `https://`，不是 `http://`**
+- **路径是 `home`，不是 `homr`** —— 拼错会返回 404，很容易误判成别的问题
+- 末尾是 `/overview`，完整路径 `/api/teacher/home/overview`
+
 期望看到 `{"code":1002,...}`。
+**这个"报错"就是成功** —— 说明服务活着、拦截器生效了。
+
+浏览器可能提示证书不受信任（SakuraFrp 用的是它自己的证书）。
+点「继续访问」即可，小程序那边靠调试模式也会忽略证书校验。
 
 为什么必须用流量：连着 WiFi 时手机可能走的是内网路径，
 验证不到「外网真的能访问」。只有走运营商网络才算数。
 
 ✅ **检查点 2**：手机流量下能看到 `{"code":1002}`。
 
-> 如果这一步不通，先别管小程序。检查：隧道是否显示「运行中」、地址端口有没有抄错、
-> 电脑防火墙是否拦了、SakuraFrp 免费流量是否用完（控制台能看到）。
+> 如果这一步不通，先别管小程序。按顺序查：
+> ① 隧道是否「运行中」② 自动 HTTPS 是否开了并重启过 ③ 地址端口有没有抄错
+> ④ 后端是否还在跑（回到第 1 步 curl 一次）⑤ 电脑防火墙是否拦了
+> ⑥ SakuraFrp 免费流量是否用完
 
 ---
 
@@ -152,13 +186,16 @@ cd class-assistant/frontend/uni-app/my-mp
 cp .env.production.example .env.production
 ```
 
-编辑 `.env.production`，改成你的地址（**注意是 `http://`，不是 `https://`**）：
+编辑 `.env.production`，改成你的地址（**必须是 `https://`**，因为国内节点只放行 HTTPS）：
 
 ```ini
-VITE_API_BASE_URL=http://cn-xx.natfrp.cloud:12345/api
+VITE_API_BASE_URL=https://frp-hat.com:41561/api
 ```
 
-末尾的 `/api` 不能省，它和后端的接口前缀是配套的。
+两个容易写错的地方：
+
+- **`https://` 不能写成 `http://`** —— 会被网关拦成 501
+- **末尾的 `/api` 不能省** —— 它和后端的接口前缀是配套的，漏了会全部 404
 
 ```bash
 npm run build:mp-weixin
@@ -167,10 +204,12 @@ npm run build:mp-weixin
 验证产物里真的写进去了：
 
 ```bash
-grep -o "natfrp[^\"]*" dist/build/mp-weixin/api/request.js
+grep -o "frp-hat[^\"]*" dist/build/mp-weixin/api/request.js
 ```
 
 应该看到你的地址。**如果什么都没输出，说明环境变量没生效**，别往下走。
+
+> `grep` 的关键词换成你自己隧道域名的一部分（`natfrp`、`frp-hat` 等）。
 
 ✅ **检查点 3**：`grep` 能打印出你的隧道地址。
 
@@ -284,8 +323,11 @@ npm run build:mp-weixin
 
 | 现象 | 原因 | 怎么办 |
 |---|---|---|
+| **`501 Not Implemented`（SakuraFrp 拦截页）** | **国内节点禁止明文 HTTP** | **编辑隧道 → 自动 HTTPS 选「自动」→ 重启隧道 → 改用 `https://` 访问** |
+| 返回 404，页面是 JSON 的 `1004` | 路径拼错（如 `home` 写成 `homr`） | 核对完整路径 `/api/teacher/home/overview` |
 | 手机浏览器打不开隧道地址 | 隧道没启动 / 地址抄错 | 看 SakuraFrp 面板是否「运行中」 |
 | 手机 WiFi 能开、流量打不开 | 走的是内网路径，不是真穿透 | 必须用流量验证；检查隧道是否真的建立了公网映射 |
+| 浏览器提示证书不受信任 | SakuraFrp 用自己的证书 | 点「继续访问」；小程序侧靠调试模式忽略 |
 | 开发者工具里转圈 | 后端没启动 | 回到第 1 步，curl 一下 |
 | 提示 `url not in domain list` | 没开调试模式 | 右上角「···」→「打开调试」 |
 | 提示 `request:fail` 且没别的信息 | 地址错了 / 端口不通 | 手机上用浏览器直接访问那个地址试试 |
