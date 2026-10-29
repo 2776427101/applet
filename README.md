@@ -11,7 +11,7 @@ class-assistant/
 ├─ frontend/uni-app/my-mp/         # uni-app 微信小程序
 ├─ backend/class_assistant_server/ # Spring Boot 后端
 ├─ database/                       # 数据库结构和演示数据
-├─ docs/                           # 接口、运行、构建和发布文档
+├─ docs/                           # 工程笔记、接口契约、运行/构建/发布文档
 ├─ .gitignore
 └─ README.md
 ```
@@ -131,6 +131,7 @@ VITE_API_BASE_URL="https://api.example.com/api" npm run build:mp-weixin
 
 ## 文档
 
+- [**工程笔记与设计决策**](docs/engineering-notes.md) —— 改代码前先看这份
 - [接口契约](docs/api-contract.md)
 - [后端本地运行](docs/backend-setup.md)
 - [前端构建](docs/frontend-build.md)
