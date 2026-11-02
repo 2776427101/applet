@@ -1,0 +1,8 @@
+# 构建产物
+bin/
+obj/
+dist/
+
+# 临时自检输出
+_test/
+*.user
