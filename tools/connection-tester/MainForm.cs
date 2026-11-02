@@ -26,10 +26,10 @@ public sealed class MainForm : Form
     private readonly CheckBox _chkAll = new() { Text = "显示虚拟网卡", Left = 340, Top = 24, Width = 136 };
     private readonly Label _lblLanPort = new() { Text = "端口", Left = 0, Top = 62, Width = 80 };
     private readonly NumericUpDown _numLanPort = new() { Left = 0, Top = 84, Width = 100, Minimum = 1, Maximum = 65535, Value = 8080 };
-    private readonly Label _lblEnv = new() { Text = "配置文件（frontend/uni-app/my-mp/.env.production）", Left = 112, Top = 62, Width = 364 };
+    private readonly Label _lblEnv = new() { Text = "配置文件 · 仅构建小程序时需要", Left = 112, Top = 62, Width = 364 };
     private readonly TextBox _txtEnv = new() { Left = 112, Top = 84, Width = 300, ReadOnly = true };
     private readonly Button _btnBrowse = new() { Text = "浏览", Left = 418, Top = 83, Width = 58, Height = 25 };
-    private readonly Label _lblPreviewTitle = new() { Text = "将写入下面这一行（改前自动备份 .bak）", Left = 0, Top = 124, Width = 476 };
+    private readonly Label _lblPreviewTitle = new() { Text = "【仅构建小程序时需要】将写入下面这一行，改前自动备份 .bak", Left = 0, Top = 124, Width = 476 };
     private readonly Label _lblPreview = new() { Left = 0, Top = 146, Width = 476, Height = 44, BorderStyle = BorderStyle.FixedSingle, TextAlign = ContentAlignment.MiddleLeft, BackColor = Color.White, Font = new Font("Consolas", 9.5f) };
     private readonly Button _btnWrite = new() { Text = "写入配置", Left = 0, Top = 200, Width = 150, Height = 32 };
     private readonly Button _btnOpenFolder = new() { Text = "打开所在目录", Left = 160, Top = 200, Width = 150, Height = 32 };
@@ -106,7 +106,9 @@ public sealed class MainForm : Form
 
         if (string.IsNullOrEmpty(_txtEnv.Text))
         {
-            Append("提示：没自动找到 .env.production，点「浏览」手动选一下。", Color.FromArgb(133, 79, 11));
+            Append("提示：这台机器上没找到 .env.production。", Color.FromArgb(133, 79, 11));
+            Append("     只是测试连接的话不用管它，选好网卡直接点「开始测试」就行。", Color.FromArgb(95, 94, 90));
+            Append("     要重新构建小程序，才点「浏览」选中那个文件。", Color.FromArgb(95, 94, 90));
         }
         else
         {
@@ -154,15 +156,16 @@ public sealed class MainForm : Form
         _pnlTunnel.Visible = tunnel;
         _pnlLan.Visible = !tunnel;
 
-        _btnWrite.Enabled = !tunnel;
         _btnOpenFolder.Enabled = !tunnel;
         _btnFwQuery.Enabled = !tunnel;
         _btnFwAdd.Enabled = !tunnel;
         _btnFwRemove.Enabled = !tunnel;
 
+        UpdatePreview();
+
         _statusLabel.Text = tunnel
             ? "隧道模式：只做连通性探测，不改本机设置"
-            : "局域网模式：会修改 .env.production 与防火墙规则";
+            : "局域网模式：只测连接的话，选好网卡点「开始测试」即可，不必写配置";
     }
 
     private void LoadNics()
@@ -188,9 +191,19 @@ public sealed class MainForm : Form
     private void UpdatePreview()
     {
         var ip = CurrentIp;
-        _lblPreview.Text = ip.Length == 0
+        var envPath = _txtEnv.Text.Trim();
+        bool hasEnv = envPath.Length > 0 && File.Exists(envPath);
+
+        var line = ip.Length == 0
             ? "（没选到网卡）"
             : EnvWriter.BuildLine(EnvWriter.BuildUrl(ip, (int)_numLanPort.Value));
+
+        _lblPreview.Text = hasEnv ? line : line + "     ← 本机没有配置文件，可跳过";
+
+        // 没有仓库的机器上，「写入配置」点了也只会告诉他可以跳过。
+        // 让按钮文字自己把这个信息带出来，比禁用之后无法解释要清楚。
+        _btnWrite.Text = hasEnv ? "写入配置" : "写入配置（可跳过）";
+        _btnWrite.Enabled = !_rbTunnel.Checked;
     }
 
     private void OnBrowse(object? sender, EventArgs e)
@@ -222,9 +235,14 @@ public sealed class MainForm : Form
     private void OnWrite(object? sender, EventArgs e)
     {
         var path = _txtEnv.Text.Trim();
-        if (path.Length == 0 || !File.Exists(path))
+
+        // 使用者（只测连接、不构建小程序）通常根本没有这个文件。
+        // 以前这里只说「先点浏览」，等于让他去找一个不存在的东西，得先说清楚可以跳过。
+        if (path.Length == 0)
         {
-            Append("[FAIL] 找不到配置文件，先点「浏览」选一下。", Color.FromArgb(163, 45, 45));
+            Append("[跳过] 你没有指定配置文件。", Color.FromArgb(133, 79, 11));
+            Append("       如果你只是想测试连接，这一步不用做 —— 直接点右边「开始测试」。", Color.FromArgb(95, 94, 90));
+            Append("       只有需要重新构建小程序时，才点「浏览」选中 .env.production。", Color.FromArgb(95, 94, 90));
             return;
         }
 
@@ -243,16 +261,33 @@ public sealed class MainForm : Form
             "确认写入", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
         if (confirm != DialogResult.OK) return;
 
-        if (EnvWriter.TryWrite(path, url, out var message, out var backup))
+        var outcome = EnvWriter.TryWrite(path, url);
+
+        if (outcome.Ok)
         {
-            Append($"[OK] 配置已写入：{message}", Color.FromArgb(39, 80, 10));
-            Append($"     备份文件：{backup}", Color.FromArgb(95, 94, 90));
+            Append($"[OK] 配置已写入：{outcome.Message}", Color.FromArgb(39, 80, 10));
+            if (outcome.BackupPath.Length > 0)
+                Append($"     备份文件：{outcome.BackupPath}", Color.FromArgb(95, 94, 90));
             Append("     下一步：npm run build:mp-weixin 重新构建，然后在开发者工具里点「编译」和「预览」。", Color.FromArgb(95, 94, 90));
+            return;
         }
-        else
+
+        // 失败：先说清是什么原因，再逐条给出可操作的下一步
+        Append("[FAIL] " + outcome.Message, Color.FromArgb(163, 45, 45));
+        foreach (var l in outcome.Suggestion.Split('\n'))
         {
-            Append("[FAIL] 写入失败：" + message, Color.FromArgb(163, 45, 45));
+            var t = l.TrimEnd('\r');
+            if (t.Length > 0) Append("       " + t, Color.FromArgb(133, 79, 11));
         }
+
+        // 兜底：写入走不通时，把这一行塞进剪贴板，用户至少能手动粘进文件
+        Append($"       配置行：{line}", Color.FromArgb(95, 94, 90));
+        try
+        {
+            Clipboard.SetText(line);
+            Append("       已复制到剪贴板，可以自己打开 .env.production 粘贴。", Color.FromArgb(95, 94, 90));
+        }
+        catch { /* 剪贴板被别的程序占着，忽略 */ }
     }
 
     private async void OnTest(object? sender, EventArgs e)
