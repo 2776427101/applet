@@ -100,7 +100,7 @@ export function request({ url, method = 'GET', data = {}, auth = true, silent = 
         reject(new Error(msg))
       },
       fail: (err) => {
-        /* 网络层就失败了：后端没启动、断网、域名不在白名单。
+        /* 网络层就失败了：后端没启动、断网、域名不在白名单、证书被拒。
            注意这里必须 reject 一个 Error 而不是原始的 err 对象 ——
            原始对象只有 errMsg: "request:fail ..."，页面拿 e.message 是 undefined，
            想显示原因就只能显示「加载失败」四个字 */

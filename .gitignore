@@ -51,6 +51,14 @@ out/
 *.war
 !**/.mvn/wrapper/maven-wrapper.jar
 
+# ===== C# / .NET 工具（tools/connection-tester）=====
+# 只提交源码。bin/obj 是中间产物（本机实测 157MB），dist 里是 63MB 单文件 exe，
+# 二进制进 git 会让每次改代码都多存一整份快照，仓库会迅速膨胀到无法 clone。
+# exe 要给别人用，直接微信/QQ 传文件，不要放进仓库。
+bin/
+obj/
+*.exe
+
 # uni-app / 微信开发者工具
 _icon-color-backup/
 project.private.config.json
