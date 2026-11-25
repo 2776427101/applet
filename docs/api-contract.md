@@ -485,7 +485,7 @@ GET /api/teacher/home/notices?classId=1&limit=20
     "list": [
       {
         "kind": "leave",
-        "title": "王小明 提交了请假申请",
+        "title": "黄旭铭 提交了请假申请",
         "desc": "病假 · 11-05 12:38 至 11-06 10:38",
         "atText": "3 分钟前",
         "atMillis": 1793846280000,
@@ -496,7 +496,7 @@ GET /api/teacher/home/notices?classId=1&limit=20
         "className": "24计算机软通1班"
       },
       { "kind": "todo", "title": "待办：交回执", "desc": "今天到期", "atText": "刚刚", "todoId": 3, "classId": 2, "className": "24软通班2班" },
-      { "kind": "birthday", "title": "今天是 张小华 的生日", "desc": "可以去群里说声生日快乐", "atText": "今天", "studentId": 122, "classId": 1, "className": "24计算机软通1班" }
+      { "kind": "birthday", "title": "今天是 吴文圭 的生日", "desc": "可以去群里说声生日快乐", "atText": "今天", "studentId": 122, "classId": 1, "className": "24计算机软通1班" }
     ]
   }
 }
@@ -2545,7 +2545,7 @@ export const fileUrl = (p) => BASE_URL.replace(/\/api\/?$/, '') + p
 
 - 只有发起人 / 群主 / 班委能调
 - **整批一个事务**：中途有一条重复或超员，全部回滚。部分成功比全失败更难解释——老师没法知道到底哪几条进去了
-- 重复时报 `1006 王小明 已经在第 1 位了`，指名道姓说清楚，不悄悄跳过
+- 重复时报 `1006 黄旭铭 已经在第 1 位了`，指名道姓说清楚，不悄悄跳过
 
 ### 9.7.7 发起抽签 `POST /api/container/{id}/lottery`
 
@@ -2644,7 +2644,7 @@ export const fileUrl = (p) => BASE_URL.replace(/\/api\/?$/, '') + p
 {
   "classId": 1,
   "messages": [
-    { "role": "user", "content": "王小明的成绩怎么样" }
+    { "role": "user", "content": "黄旭铭的成绩怎么样" }
   ]
 }
 ```
@@ -2662,7 +2662,7 @@ export const fileUrl = (p) => BASE_URL.replace(/\/api\/?$/, '') + p
 {
   "code": 0,
   "data": {
-    "reply": "王小明这次期中考试总分 383，班内第 8 名，比班平均高 32 分。\n· 数学 135\n· 英语 128\n· 语文 120",
+    "reply": "黄旭铭这次期中考试总分 383，班内第 8 名，比班平均高 32 分。\n· 数学 135\n· 英语 128\n· 语文 120",
     "toolCalls": 1,
     "action": null
   }
@@ -2675,12 +2675,12 @@ export const fileUrl = (p) => BASE_URL.replace(/\/api\/?$/, '') + p
 {
   "code": 0,
   "data": {
-    "reply": "我要给王小明录语文 125 分，确认卡已经弹出来了。",
+    "reply": "我要给黄旭铭录语文 125 分，确认卡已经弹出来了。",
     "toolCalls": 0,
     "action": {
       "type": "save_scores",
       "title": "录入成绩",
-      "summary": "王小明 · 期中考试：语文 125",
+      "summary": "黄旭铭 · 期中考试：语文 125",
       "confirmText": "确认录入",
       "danger": false,
       "params": { "_studentId": 121, "_examId": 2, "scores": [{ "subject": "语文", "score": 125 }] }
@@ -2866,7 +2866,7 @@ app:
 |---|---|
 | 待确认 | 两个按钮：取消 / `confirmText` |
 | 执行中 | 按钮变浅、文案「执行中…」，防连点 |
-| 已执行 | 按钮换成后端返回的那句话（「已录入 王小明 的 期中考试：语文 125」） |
+| 已执行 | 按钮换成后端返回的那句话（「已录入 黄旭铭 的 期中考试：语文 125」） |
 | 已取消 | 「已取消，没有改动任何数据」，不发请求——没落库就没有要撤销的东西 |
 | 失败 | 红字显示原因，**按钮保留**，可以再点一次 |
 
@@ -2906,7 +2906,7 @@ app:
 > 现在查得到就进班；查不到也给一张 token，只是这张 token **没有班级**，只能用来入班。
 
 ```json
-{ "studentNo": "202401001", "name": "王小明", "classId": 1 }
+{ "studentNo": "202411753", "name": "黄旭铭", "classId": 1 }
 ```
 
 | 字段 | 必填 | 说明 |
@@ -2924,7 +2924,7 @@ app:
   "data": {
     "token": "...",
     "expiresIn": 604800,
-    "student": { "id": 121, "name": "王小明", "studentNo": "202401001",
+    "student": { "id": 121, "name": "黄旭铭", "studentNo": "202411753",
                  "classId": 1, "className": "24计算机软通1班",
                  "teacherName": "李光", "unread": 0 }
   }
@@ -2988,7 +2988,7 @@ app:
 两样东西，姓名是唯一能写进新建花名册行的内容 —— 没有它，班主任的名单里会出现一个
 只有学号、没有名字的人，谁也不知道那是谁。顺带也把"输错学号登进别人账号"这道闸关紧了。
 
-**姓名比较会去掉所有空白**（含全角空格）：名单里是「王小明」，学生在手机上打成
+**姓名比较会去掉所有空白**（含全角空格）：名单里是「黄旭铭」，学生在手机上打成
 「黄 旭铭」不该被判成"不是同一个人"。空白从来不带信息，只带手误。
 
 ### 9.9.3 老师发私信
@@ -3005,8 +3005,8 @@ app:
 ```json
 {
   "studentId": 143,
-  "name": "刘思远",
-  "studentNo": "202401004",
+  "name": "闻子炫",
+  "studentNo": "202411171",
   "lastContent": "老师我收到了",
   "lastTime": "11-18 16:01",
   "lastSenderRole": 2,
@@ -3055,7 +3055,7 @@ app:
 
 // 响应
 { "token": "eyJ...", "expiresIn": 604800,
-  "student": { "id": 121, "name": "王小明", "studentNo": "202401001",
+  "student": { "id": 121, "name": "黄旭铭", "studentNo": "202411753",
                "classId": 2, "className": "24软通班2班",
                "teacherName": "李光", "unread": 0 },
   "alreadyIn": false }
@@ -3069,7 +3069,7 @@ app:
 | 邀请码不存在 / 班已归档 | 1004「邀请码不对，找班主任要一下」 |
 | 该班花名册里有这个学号，姓名一致 | 绑定到那一行，发新 token |
 | 该班花名册里**没有**这个学号 | **新建一行**（`status=1` 在读），发新 token |
-| 该班花名册里有这个学号，但**姓名对不上** | 1004「「24软通班2班」里的学号 202401001 叫「王小明」，和你填的姓名对不上」 |
+| 该班花名册里有这个学号，但**姓名对不上** | 1004「「24软通班2班」里的学号 202411753 叫「黄旭铭」，和你填的姓名对不上」 |
 | 这个学号在该班是**离班**状态（`status=0`） | 1004「你之前在这个班，现在不在名单里了，找班主任把你恢复」——**不新建重复行** |
 | 本来就在这个班 | `alreadyIn=true`，**照样给一张可用 token** |
 | 邀请码大小写不一致 | 先按原样查，查不到再转大写查一次，所以 `5xxz74yscb` 也能进 |
@@ -3428,7 +3428,7 @@ v0.39 下架 `classmates`、新增班级群 3 个，所以总数不变）
 [ { "id": 2, "name": "24计算机软通1班", "subjectName": "24计算机软通1班",
     "className": "24计算机软通1班", "ownerName": "李光",
     "memberCount": 59, "teacherCount": 1, "studentCount": 58,
-    "lastContent": "我是陈志强", "lastTime": "11-24 11:01",
+    "lastContent": "我是杨凯", "lastTime": "11-24 11:01",
     "classGroup": true, "canLeave": false } ]
 
 // GET /api/student/group/2/messages

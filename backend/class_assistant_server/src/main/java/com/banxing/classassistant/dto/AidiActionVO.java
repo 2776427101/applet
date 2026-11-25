@@ -22,7 +22,7 @@ public class AidiActionVO {
     /** 卡片标题，如「录入成绩」 */
     private String title;
 
-    /** 一行摘要，把参数说清楚，如「王小明 · 期中考试 · 语文 120 / 数学 135」 */
+    /** 一行摘要，把参数说清楚，如「黄旭铭 · 期中考试 · 语文 120 / 数学 135」 */
     private String summary;
 
     /** 确认按钮文案，如「确认录入」 */
