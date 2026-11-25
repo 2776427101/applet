@@ -1,0 +1,362 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "班级助手"
+			}
+		},
+		{
+			"path": "pages/teacher/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/teacher/contact/index",
+			"style": {
+				"navigationBarTitleText": "通讯录"
+			}
+		},
+		{
+			"path": "pages/teacher/student/index",
+			"style": {
+				"navigationBarTitleText": "学生"
+			}
+		},
+		{
+			"path": "pages/teacher/student/detail",
+			"style": {
+				"navigationBarTitleText": "学生详情"
+			}
+		},
+		{
+			"path": "pages/teacher/student/message",
+			"style": {
+				"navigationBarTitleText": "私信"
+			}
+		},
+		{
+			"path": "pages/teacher/student/edit",
+			"style": {
+				"navigationBarTitleText": "添加学生"
+			}
+		},
+		{
+			"path": "pages/teacher/student/import",
+			"style": {
+				"navigationBarTitleText": "导入名单"
+			}
+		},
+		{
+			"path": "pages/teacher/class/setting",
+			"style": {
+				"navigationBarTitleText": "班级信息"
+			}
+		},
+		{
+			"path": "pages/teacher/class/create",
+			"style": {
+				"navigationBarTitleText": "新建班级"
+			}
+		},
+		{
+			"path": "pages/teacher/todo/index",
+			"style": {
+				"navigationBarTitleText": "待办"
+			}
+		},
+		{
+			"path": "pages/teacher/notice/index",
+			"style": {
+				"navigationBarTitleText": "通知"
+			}
+		},
+		{
+			"path": "pages/teacher/score/index",
+			"style": {
+				"navigationBarTitleText": "成绩"
+			}
+		},
+		{
+			"path": "pages/teacher/score/edit",
+			"style": {
+				"navigationBarTitleText": "录入成绩"
+			}
+		},
+		{
+			"path": "pages/teacher/score/exam-edit",
+			"style": {
+				"navigationBarTitleText": "新建考试"
+			}
+		},
+		{
+			"path": "pages/teacher/score/import",
+			"style": {
+				"navigationBarTitleText": "导入成绩"
+			}
+		},
+		{
+			"path": "pages/teacher/seat/index",
+			"style": {
+				"navigationBarTitleText": "座位"
+			}
+		},
+		{
+			"path": "pages/teacher/aidi/index",
+			"style": {
+				"navigationBarTitleText": "乐迪"
+			}
+		},
+		{
+			"path": "pages/teacher/leave/index",
+			"style": {
+				"navigationBarTitleText": "请假",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
+		},
+		{
+			"path": "pages/teacher/mine/index",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/teacher/mine/edit",
+			"style": {
+				"navigationBarTitleText": "编辑资料"
+			}
+		},
+		{
+			"path": "pages/teacher/container/index",
+			"style": {
+				"navigationBarTitleText": "课程群组"
+			}
+		},
+		{
+			"path": "pages/teacher/container/chat",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/teacher/container/create",
+			"style": {
+				"navigationBarTitleText": "新建课程群组"
+			}
+		},
+		{
+			"path": "pages/teacher/container/detail",
+			"style": {
+				"navigationBarTitleText": "群组详情"
+			}
+		},
+		{
+			"path": "pages/teacher/container/members",
+			"style": {
+				"navigationBarTitleText": "成员管理"
+			}
+		},
+		{
+			"path": "pages/teacher/container/highlight",
+			"style": {
+				"navigationBarTitleText": "精华消息"
+			}
+		},
+		{
+			"path": "pages/teacher/container/invite",
+			"style": {
+				"navigationBarTitleText": "邀请码"
+			}
+		},
+		{
+			"path": "pages/teacher/container/blacklist",
+			"style": {
+				"navigationBarTitleText": "黑名单"
+			}
+		},
+		{
+			"path": "pages/teacher/container/relay-create",
+			"style": {
+				"navigationBarTitleText": "发起接龙"
+			}
+		},
+		{
+			"path": "pages/teacher/container/relay-detail",
+			"style": {
+				"navigationBarTitleText": "接龙",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
+		},
+		{
+			"path": "pages/teacher/container/lottery-create",
+			"style": {
+				"navigationBarTitleText": "发起抽签"
+			}
+		},
+		{
+			"path": "pages/teacher/container/lottery-result",
+			"style": {
+				"navigationBarTitleText": "抽签结果"
+			}
+		},
+		{
+			"path": "pages/container/join",
+			"style": {
+				"navigationBarTitleText": "加入课程群组"
+			}
+		},
+		{
+			"path": "pages/student/login",
+			"style": {
+				"navigationBarTitleText": "学生登录"
+			}
+		},
+		{
+			"path": "pages/student/home",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/student/contact/index",
+			"style": {
+				"navigationBarTitleText": "通讯录"
+			}
+		},
+		{
+			"path": "pages/student/group/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/student/group/detail",
+			"style": {
+				"navigationBarTitleText": "群信息"
+			}
+		},
+		{
+			"path": "pages/student/group/join",
+			"style": {
+				"navigationBarTitleText": "加入群聊"
+			}
+		},
+		{
+			"path": "pages/student/join/index",
+			"style": {
+				"navigationBarTitleText": "加入班级"
+			}
+		},
+		{
+			"path": "pages/student/aidi/index",
+			"style": {
+				"navigationBarTitleText": "乐迪"
+			}
+		},
+		{
+			"path": "pages/student/message",
+			"style": {
+				"navigationBarTitleText": "班主任私信"
+			}
+		},
+		{
+			"path": "pages/student/leave/index",
+			"style": {
+				"navigationBarTitleText": "我的请假",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark"
+			}
+		},
+		{
+			"path": "pages/student/leave/apply",
+			"style": {
+				"navigationBarTitleText": "申请请假"
+			}
+		},
+		{
+			"path": "pages/student/leave/detail",
+			"style": {
+				"navigationBarTitleText": "请假详情"
+			}
+		},
+		{
+			"path": "pages/student/score/index",
+			"style": {
+				"navigationBarTitleText": "我的成绩"
+			}
+		},
+		{
+			"path": "pages/student/seat/index",
+			"style": {
+				"navigationBarTitleText": "我的座位"
+			}
+		},
+		{
+			"path": "pages/student/notice/index",
+			"style": {
+				"navigationBarTitleText": "我的通知"
+			}
+		},
+		{
+			"path": "pages/student/profile/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/student/profile/edit",
+			"style": {
+				"navigationBarTitleText": "编辑资料"
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#8A8178",
+		"selectedColor": "#C5342B",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "white",
+		"list": [
+			{
+				"pagePath": "pages/teacher/index/index",
+				"text": "首页",
+				"iconPath": "static/icons/tab-home.png",
+				"selectedIconPath": "static/icons/tab-home-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/contact/index",
+				"text": "通讯录",
+				"iconPath": "static/icons/tab-student.png",
+				"selectedIconPath": "static/icons/tab-student-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/aidi/index",
+				"text": "乐迪",
+				"iconPath": "static/icons/tab-aidi.png",
+				"selectedIconPath": "static/icons/tab-aidi-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/leave/index",
+				"text": "请假",
+				"iconPath": "static/icons/tab-leave.png",
+				"selectedIconPath": "static/icons/tab-leave-on.png"
+			},
+			{
+				"pagePath": "pages/teacher/mine/index",
+				"text": "个人中心",
+				"iconPath": "static/icons/tab-mine.png",
+				"selectedIconPath": "static/icons/tab-mine-on.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "班级助手",
+		"navigationBarBackgroundColor": "#F7EFE4",
+		"backgroundColor": "#F7EFE4"
+	}
+}

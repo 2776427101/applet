@@ -1,0 +1,53 @@
+server:
+  port: 8080 # Tomcat启动端口
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/class_assistant?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai # 数据库连接URL
+    username: ${DB_USER:root} # 数据库用户名
+    password: ${DB_PASSWORD:1234} # 数据库密码（本机 root 密码；线上请改用环境变量 DB_PASSWORD 覆盖）
+  # 学生名单导入要传 xlsx（69 人的名单大概 20~40KB，业务层另有 5MB 上限）；
+  # 群聊要传图片/视频/文件，视频最大 30MB，所以这里放到 30MB。
+  # 真正的分类限制在 ContainerFileServiceImpl 里按 kind 各判一次，这里只是兜底。
+  servlet:
+    multipart:
+      max-file-size: 30MB     # 单个文件
+      max-request-size: 35MB  # 整个请求（文件 + 表单字段）
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true                        # create_at → createAt下划线到驼峰的映射
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl     # 控制台打印 SQL，调试必备，日志实现
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:dev-only-change-me-please-32-chars-min} # 启动时生成的 JWT 密钥如果没有则使用默认值dev-only-change-me-please-32-chars-min
+    expire-seconds: 604800          # 7 天，JWT 过期时间
+  # 群聊附件落盘目录。相对路径是相对"启动时的工作目录"，用 java -jar 从
+  # backend/class_assistant_server 启动时就是那个目录下的 uploads/
+  # 线上请用环境变量 UPLOAD_DIR 指到一个不会被清理、且随备份走的位置
+  upload:
+    dir: ${UPLOAD_DIR:./uploads}
+    # 按类型分别限制（单位 MB）。只靠 servlet 的 30MB 兜底不够：
+    # 一张图也给 30MB 的话，几个人连发就能把磁盘写满
+    max-image-mb: 10
+    max-video-mb: 30
+    max-file-mb: 20
+  wx:
+    appid: ${WX_APPID:} # 微信小程序的 appid
+    secret: ${WX_SECRET:} # 微信小程序的 secret
+    mock: ${WX_MOCK:true} # 开发默认 true；正式环境必须设 WX_MOCK=false，否则所有人都会登录成同一个测试账号
+    mock-openid: seed_openid_teacher # mock 模式下的固定 openid，对应 02_seed.sql 里的李光老师（id=1，带 628 班）
+  # 乐迪（AI 小助手）走 DeepSeek 的 OpenAI 兼容接口。
+  # key 只能待在后端：一旦写进小程序，反编译包就能拿到，等于公开。
+  #
+  # 【不要在这里写 key】仓库是公开的，写进默认值等于公开。
+  # 本地开发请在启动前设置环境变量 DEEPSEEK_API_KEY（见 .env.example）；
+  # 没配也能启动 —— DeepSeekClient.configured() 会返回 false，
+  # 只有乐迪会提示未配置，其他功能全部正常（这是刻意的，见 §9.52）。
+  deepseek:
+    api-key: ${DEEPSEEK_API_KEY:}
+    base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+    model: ${DEEPSEEK_MODEL:deepseek-chat}
+    # 一次问答最多 3 轮工具调用，每轮都是一次完整的 HTTP 往返，所以读超时给得比较宽
+    timeout-seconds: ${DEEPSEEK_TIMEOUT:60}

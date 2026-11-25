@@ -1,0 +1,25 @@
+### ① 参数校验：code 传空，应该返回 400 + 1001
+POST http://localhost:8080/api/auth/wx-login
+Content-Type: application/json
+
+{"code": ""}
+
+### ② 拦截器：不带 token 访问 /me，应该返回 401 + 1002
+GET http://localhost:8080/api/auth/me
+
+### ③ 404：不存在的路径，应该返回 404 + 1004
+GET http://localhost:8080/foo
+
+### ④ 登录：mock 模式下 code 会被当作 openid，应该返回 code=0 和 token
+POST http://localhost:8080/api/auth/wx-login
+Content-Type: application/json
+
+{"code": "test_openid_001"}
+
+### ⑤ 查询当前用户：把上一步返回的 token 粘到下面（Bearer 后面要有空格）
+GET http://localhost:8080/api/auth/me
+Authorization: Bearer 粘贴你的token
+
+### ⑥ 教师首页聚合数据：需要先绑班才有数字
+GET http://localhost:8080/api/teacher/home/overview
+Authorization: Bearer 粘贴你的token
