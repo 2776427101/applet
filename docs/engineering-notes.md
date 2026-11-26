@@ -2684,7 +2684,7 @@ mysql -u root -p < database/migrations/04_subject_container.sql
 ### 环境变量形式不等于安全
 
 ```yaml
-api-key: ${DEEPSEEK_API_KEY:sk-REDACTED}
+api-key: ${DEEPSEEK_API_KEY:sk-REDACTED（真实 key 已打码，见 GitHub push protection 记录）}
 ```
 
 看着是"支持环境变量"，实际上**默认值就是一把能用的真 key**，提交即公开。
