@@ -86,7 +86,7 @@ done
 私信（`t_direct_message`）、接龙抽签、`t_student_container` 全部在 `04` 之后的增量脚本里。
 漏掉它们，后端能启动，但一进群聊 / 乐迪就报表不存在。
 
-跑完应该有 **22 张表**，可以这样核对：
+跑完应该有 **23 张表**（基线 8 张 + 增量 15 张），可以这样核对：
 
 ```bash
 mysql -u root -p -e "SELECT COUNT(*) FROM information_schema.TABLES
